@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Styling a SignUp Form</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
+</head>
+<body>
+<div class="signupFrm">
+    <div class="wrapper">
+        <form th:action="@{/api/v1/products/create}" method="post" th:object="${productDTO}" class="form">
+            <h1 class="title">Create a new Product</h1>
+
+            <div class="inputContainer">
+                <input type="text" th:field="*{name}" class="input">
+                <label class="label">Name</label>
+            </div>
+
+
+            <div class="inputContainer">
+                <label for="productType" class="label"></label>
+                <select id="productType" name="productType" th:field="*{productType}" class="input">
+                    <option value="Spain">Select a product type</option>
+                    <!-- Utilizando Thymeleaf para generar opciones desde el modelo -->
+                    <th:block th:each="type : ${types}">
+                        <option th:value="${type}" th:text="${type.value}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <input type="submit" class="submitBtn" value="Create">
+        </form>
+    </div>
+</div>
+</body>
+</html>
