@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import trastu.dev.xips.entities.Role;
 import trastu.dev.xips.entities.User;
 import trastu.dev.xips.entities.UserProfile;
 import trastu.dev.xips.repositories.UserRepository;
@@ -34,6 +35,8 @@ public class XipsApplication implements CommandLineRunner {
             User user = User.builder()
                     .username("test")
                     .password(passwordEncoder.encode("test"))
+                    .role(Role.USER)
+                    .email("test@test.com")
                     .userProfile(new UserProfile())
                     .build();
 
