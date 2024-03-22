@@ -12,6 +12,8 @@ import java.util.List;
 public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product> findByProductType(ProductType productType);
 
+    List<Product> findByUsername(String username);
+
     @Repository
     interface RatingRepository extends MongoRepository<Rating, String> {
 

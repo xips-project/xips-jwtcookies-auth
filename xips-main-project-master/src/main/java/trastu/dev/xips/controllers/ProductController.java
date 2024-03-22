@@ -16,8 +16,9 @@ import trastu.dev.xips.entities.User;
 import trastu.dev.xips.services.ProductService;
 
 import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
@@ -38,10 +39,17 @@ public class ProductController {
         return ResponseEntity.ok(productList);
     }
 
-    @GetMapping("/list/{productType}")
+    @GetMapping("/list/user/{username}")
+    public List<Map<String, Object>> getProductsAndRatingsByUsername(@PathVariable String username) {
+        return productService.getProductsAndRatingsByUsername(username);
+    }
+
+    @GetMapping("/list/type/{productType}")
     public List<Product> getProductsByProductType(@PathVariable ProductType productType) {
         return productService.getProductsByProductType(productType);
     }
+
+    /* create without form
 
     @PostMapping("/create")
     public ResponseEntity<Product> newProduct(@RequestBody ProductDTO productDTO, BindingResult bindingResult) {
@@ -53,8 +61,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
-
-    /* create product html form
+     */
 
     @GetMapping("/create")
     public String showForm(Model model){
@@ -64,10 +71,10 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute ProductDTO productDTO, HttpSession session){
+    public String create(@ModelAttribute ProductDTO productDTO, Model model){
         Product product = productService.save(productDTO);
-        session.setAttribute("product", product);
+        model.addAttribute("product", product);
         return "creation-success";
     }
-    */
+
 }
