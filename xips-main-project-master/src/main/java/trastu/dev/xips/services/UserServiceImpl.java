@@ -23,8 +23,9 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
-    public List<User> getAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -45,7 +46,6 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
         newUser.setEmail(userDTO.getEmail());
-        newUser.setRole(userDTO.getRole());
         newUser.setUserProfile(UserProfile.builder()
                 .firstname(userDTO.getUserProfile().getFirstname())
                 .lastname(userDTO.getUserProfile().getLastname())

@@ -36,6 +36,8 @@ public class User implements UserDetails{
     private Role role;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfile userProfile;
+    @Embedded
+    private Audit audit = new Audit();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
