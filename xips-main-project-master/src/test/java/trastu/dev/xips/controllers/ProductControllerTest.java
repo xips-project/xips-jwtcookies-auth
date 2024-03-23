@@ -56,7 +56,8 @@ class ProductControllerTest {
     private final String basePath = "/api/v1/products";
     private static List<Product> products;
 
-    public static final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor() {
+    // TODO -> needs some work
+    public static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor() {
 
         return jwt().jwt(jwt -> jwt.claims(claims -> {
 
@@ -152,6 +153,4 @@ class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("creation-success"));
     }
-
-
 }

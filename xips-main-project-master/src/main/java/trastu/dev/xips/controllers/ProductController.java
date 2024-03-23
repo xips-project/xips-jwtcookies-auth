@@ -45,6 +45,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/type/{productType}")
+    @ResponseBody
     public List<Product> getProductsByProductType(@PathVariable ProductType productType) {
         return productService.getProductsByProductType(productType);
     }
