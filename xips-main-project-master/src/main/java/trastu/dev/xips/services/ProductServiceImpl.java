@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService{
                             "productName", product.getName(),
                             "productType", product.getProductType(),
                             "username", product.getUsername(),
-                            "ratings", rating
+                            "userRating", rating
                     );
                 })
                 .collect(Collectors.toList());

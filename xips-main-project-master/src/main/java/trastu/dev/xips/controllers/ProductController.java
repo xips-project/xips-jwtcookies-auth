@@ -40,6 +40,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/user/{username}")
+    @ResponseBody
     public List<Map<String, Object>> getProductsAndRatingsByUsername(@PathVariable String username) {
         return productService.getProductsAndRatingsByUsername(username);
     }
