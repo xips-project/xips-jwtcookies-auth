@@ -15,42 +15,29 @@
     <description>xips</description>
     <properties>
         <java.version>17</java.version>
+        <sonar.projectKey>xips-project</sonar.projectKey>
+        <sonar.projectName>xips-project</sonar.projectName>
+        <sonar.host.url>http://0.0.0.0:9000</sonar.host.url>
+        <sonar.scm.disabled>true</sonar.scm.disabled>
+        <jacoco.version>0.8.11</jacoco.version>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-core</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-saml-api</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-security-impl</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security.extensions</groupId>
-            <artifactId>spring-security-saml2-core</artifactId>
-            <version>1.0.10.RELEASE</version>
-        </dependency>
+
+
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml-security-api</artifactId>
-            <version>4.0.1</version>
-        </dependency>
+
         <dependency>
             <groupId>jakarta.security.jacc</groupId>
             <artifactId>jakarta.security.jacc-api</artifactId>
@@ -117,11 +104,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-saml2-service-provider</artifactId>
-            <version>6.2.2</version>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -137,6 +120,31 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <phase>verify</phase>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
