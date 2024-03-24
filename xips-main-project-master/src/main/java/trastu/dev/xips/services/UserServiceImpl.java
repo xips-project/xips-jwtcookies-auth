@@ -1,13 +1,14 @@
 package trastu.dev.xips.services;
 
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import trastu.dev.xips.dto.UserDTO;
+import trastu.dev.xips.entities.Rating;
 import trastu.dev.xips.entities.User;
 import trastu.dev.xips.entities.UserProfile;
 import trastu.dev.xips.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,19 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserDTO userDTO) {
-
-        User newUser = new User();
-        newUser.setUsername(userDTO.getUsername());
-        newUser.setEmail(userDTO.getEmail());
-        newUser.setUserProfile(UserProfile.builder()
-                .firstname(userDTO.getUserProfile().getFirstname())
-                .lastname(userDTO.getUserProfile().getLastname())
-                .address(userDTO.getUserProfile().getAddress())
-                .birthdate(userDTO.getUserProfile().getBirthdate())
-                .zipCode(userDTO.getUserProfile().getZipCode())
-                .cityName(userDTO.getUserProfile().getCityName())
-                .country(userDTO.getUserProfile().getCountry())
-                .build());
+        UserProfile userProfile = userDTO.getUserProfile();
+        User newUser = User.builder()
+                .username(userDTO.getUsername())
+                .email(userDTO.getEmail())
+                .userProfile(userProfile)
+                .build();
+        userProfile.setUser(newUser);
         userRepository.save(newUser);
         return newUser;
     }
@@ -64,6 +59,12 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public void setRating(Rating rating) {
+        User user = rating.getUser();
+        user.getRatings().add(rating);
+        userRepository.save(rating.getUser());
+    }
 
 
 }

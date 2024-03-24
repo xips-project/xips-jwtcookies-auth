@@ -1,7 +1,7 @@
 package trastu.dev.xips.services;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 import trastu.dev.xips.dto.UserDTO;
+import trastu.dev.xips.entities.Rating;
 import trastu.dev.xips.entities.User;
 
 import java.util.List;
@@ -20,6 +20,8 @@ public interface UserService {
     User save(UserDTO userDTO);
 
     void delete(UUID id);
+
+    void setRating (Rating rating);
 
 
 }

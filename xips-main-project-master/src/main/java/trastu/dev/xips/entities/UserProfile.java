@@ -29,7 +29,7 @@ public class UserProfile {
     private String zipCode;
     private String country;
     @OneToOne
-    @JoinColumn(name="user_id", unique = true)
+    @JoinColumn(name="user_id", referencedColumnName = "id", unique = true)
     private User user;
 
 }
