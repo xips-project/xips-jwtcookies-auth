@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests verify sonar:sonar'
+                sh 'mvn -f ./xips-jwtcookies-auth/pom.xml -B -DskipTests verify sonar:sonar'
             }
         }
     }
