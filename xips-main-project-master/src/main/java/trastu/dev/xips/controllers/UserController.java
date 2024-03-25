@@ -1,5 +1,6 @@
 package trastu.dev.xips.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
@@ -7,22 +8,20 @@ import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import trastu.dev.xips.dto.UserChangePasswordRequest;
 import trastu.dev.xips.dto.UserCreationRequest;
 import trastu.dev.xips.dto.UserDTO;
-import trastu.dev.xips.entities.Country;
 import trastu.dev.xips.entities.Rating;
 import trastu.dev.xips.entities.User;
 import trastu.dev.xips.entities.UserProfile;
 import trastu.dev.xips.services.UserServiceImpl;
-import trastu.dev.xips.utils.AverageRating;
+
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 
 @RestController
@@ -30,24 +29,31 @@ import java.util.Optional;
 public class UserController {
 
     private final UserServiceImpl userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    private final AverageRating averageRating;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final OkHttpClient client = new OkHttpClient();
 
-    public UserController(UserServiceImpl userService, AverageRating averageRating) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
-        this.averageRating = averageRating;
     }
 
-    @ModelAttribute("countries")
-    public Country[] getCountries() {
-        return Country.values();
 
+    @GetMapping("/list")
+    public ResponseEntity<String> getAllUsers(){
+        List<User> users = userService.findAll();
+        try {
+            String usersJson = objectMapper.writeValueAsString(users);
+            return ResponseEntity.ok(usersJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
 
-    @GetMapping("/list/{limit}")
-    public ResponseEntity<String> getAllUsers(@PathVariable int limit) {
+
+
+
+    @GetMapping("/okta/list/{limit}")
+    public ResponseEntity<String> getAllOktaUsers(@PathVariable int limit) {
 
         String url = "https://dev-82475405.okta.com//api/v1/users?limit="+limit;
 
@@ -77,14 +83,14 @@ public class UserController {
             Response response = createUserInOkta(userCreationRequest);
             UserDTO userDTO = createUserDTO(userCreationRequest);
             userService.save(userDTO);
-            return ResponseEntity.ok("ok");
+            return ResponseEntity.ok(response.body().string());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during user creation.");
         }
     }
 
-    @PostMapping("/activate")
+    @PostMapping("/okta/activate")
     public ResponseEntity<String> activateUser(@org.springframework.web.bind.annotation.RequestBody String requestBody){
         try {
             JsonNode jsonNode = objectMapper.readTree(requestBody);
@@ -100,7 +106,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/deactivate")
+    @PostMapping("/okta/deactivate")
     public ResponseEntity<String> deactivateUser(@org.springframework.web.bind.annotation.RequestBody String requestBody){
         try {
             JsonNode jsonNode = objectMapper.readTree(requestBody);
@@ -137,10 +143,28 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during server request");
         }
+    }
 
+    @PostMapping("/{username}/rating")
+    private ResponseEntity<String> setRating(@PathVariable String username, @org.springframework.web.bind.annotation.RequestBody Rating ratingRequest){
 
+        Optional<User> optionalUser = userService.getUserByUsername(username);
 
+        if (optionalUser.isEmpty()){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
 
+        User user = optionalUser.get();
+
+        Rating rating = Rating.builder()
+                .user(user)
+                .stars(ratingRequest.getStars())
+                .message(ratingRequest.getMessage())
+                .build();
+
+        userService.setRating(rating);
+
+        return ResponseEntity.ok().body(rating.toString());
     }
 
     private Response createUserInOkta(UserCreationRequest userCreationRequest) throws IOException {
@@ -213,27 +237,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{username}/rating")
-    private ResponseEntity<String> setRating(@PathVariable String username, @org.springframework.web.bind.annotation.RequestBody Rating ratingRequest){
 
-        Optional<User> optionalUser = userService.getUserByUsername(username);
-
-        if (optionalUser.isEmpty()){
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-
-        User user = optionalUser.get();
-
-        Rating rating = Rating.builder()
-                .user(user)
-                .stars(ratingRequest.getStars())
-                .message(ratingRequest.getMessage())
-                .build();
-
-        userService.setRating(rating);
-
-        return ResponseEntity.ok().body(rating.toString());
-    }
 
 
 

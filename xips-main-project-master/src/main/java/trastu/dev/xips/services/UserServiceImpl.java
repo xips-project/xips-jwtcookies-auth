@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    @Transactional
     @Override
     public List<User> findAll() {
         return userRepository.findAll();

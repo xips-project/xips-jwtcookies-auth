@@ -1,5 +1,7 @@
 package trastu.dev.xips.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@JsonIgnoreProperties(value = {"id", "password", "ratings"})
 public class User implements UserDetails{
 
     @Id
@@ -30,8 +33,11 @@ public class User implements UserDetails{
     private String username;
     private String password;
     private String email;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings;
+    @Column(name="average_rating")
+    private Double averageRating;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
