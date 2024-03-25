@@ -1,18 +1,12 @@
 package trastu.dev.xips.controllers;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import trastu.dev.xips.dto.ProductDTO;
-import trastu.dev.xips.dto.UserDTO;
-import trastu.dev.xips.entities.Country;
 import trastu.dev.xips.entities.Product;
 import trastu.dev.xips.entities.ProductType;
-import trastu.dev.xips.entities.User;
 import trastu.dev.xips.services.ProductService;
 
 import java.util.List;
